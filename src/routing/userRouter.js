@@ -14,3 +14,4 @@ userRouter.put("/updatePassword", UserController.updatePassword);
 userRouter.put("/updateEmail", UserController.updateEmail);
 
 export default userRouter;
+//prueba push
