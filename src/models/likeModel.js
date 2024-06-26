@@ -8,7 +8,7 @@ const likeSchema = new mongoose.Schema({
         unique: false
     },
     song: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true,
         unique: false
     }

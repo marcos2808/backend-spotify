@@ -16,6 +16,15 @@ const playlistSchema = new mongoose.Schema({
         unique: false
     },
 
+    songs: {
+        type: Array,
+        required: false,
+        unique: false
+    }
     
 
-})
+}, { timestamps: true })
+
+const Playlist = mongoose.model("Playlist", playlistSchema);
+
+export default Playlist;
