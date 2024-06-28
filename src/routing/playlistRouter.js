@@ -8,7 +8,7 @@ const playlistController = new PlaylistController();
 
 playlistRouter.post("/createPlaylist", authenticate, playlistController.createPlaylist);
 playlistRouter.delete("/deletePlaylist", authenticate, playlistController.deletePlaylist);
-playlistRouter.put("/updatePlaylsit", authenticate, playlistController.updatePlaylist)
+playlistRouter.put("/updatePlaylist", authenticate, playlistController.updatePlaylist)
 
 
 export default playlistRouter;
