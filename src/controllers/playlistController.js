@@ -96,6 +96,28 @@ class PlaylistController {
             throw new Error(error.message);
         }
     }
+
+    // Obtener todas las playlists de un usuario
+    async getAllPlaylists(req, res) {
+        const userId = req.user._id;
+
+        if (!userId) {
+            return res.status(400).json({ message: "User ID is required to get playlists" });
+        }
+
+        try {
+            const playlists = await Playlist.find({ user: userId });
+
+            if (!playlists || playlists.length === 0) {
+                return res.status(404).json({ message: "You haven't created any playlists yet." });
+            }
+
+            res.status(200).json({ playlists });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: error.message });
+        }
+    }
 }
 
 export default PlaylistController;
