@@ -1,16 +1,13 @@
 import Like from "../models/likeModel.js";
+import PlaylistController from "./playlistController.js";
 
 class LikeController {
-
     async create(req, res) {
         const userId = req.user._id;
         const { song } = req.body;
 
-        console.log(userId)
-        console.log(song)
-
-        if (!userId|| !song) {
-            return res.status(400).json({ message: "user and song are required to create a like" });
+        if (!userId || !song) {
+            return res.status(400).json({ message: "User and song are required to create a like" });
         }
 
         try {
@@ -19,38 +16,41 @@ class LikeController {
                 return res.status(400).json({ message: "Like already exists." });
             }
 
-            console.log(existingLike)
-
-            const like = new Like({user: userId, song});
+            const like = new Like({ user: userId, song });
             await like.save();
 
-            res.status(201).json({ message: "like created successfully.", like: {user: userId, song} });
+            // Añadir la canción a la playlist "Tus Me Gustas"
+            const playlistController = new PlaylistController();
+            await playlistController.addLikedSongsToFavorites(userId);
+
+            res.status(201).json({ message: "Like created successfully.", like: { user: userId, song } });
         } catch (error) {
-            console.log(error)
+            console.log(error);
             res.status(500).json({ message: error.message });
         }
     }
-
 
     async delete(req, res) {
         const userId = req.user._id;
-        const {song} = req.body;
+        const { song } = req.body;
 
-
-        if (!userId) return res.status(400).json({ message: "Id is required to dislike a song." });
-        if(!song) return res.status(400).json({message:"Song is required to dislike a song "});
+        if (!userId) return res.status(400).json({ message: "User ID is required to dislike a song." });
+        if (!song) return res.status(400).json({ message: "Song is required to dislike a song." });
 
         try {
-            const like = await Like.findOneAndDelete({ user: userId, song});
+            const like = await Like.findOneAndDelete({ user: userId, song });
             if (!like) return res.status(404).json({ message: "Like not found." });
+
+            // Actualizar la playlist "Tus Me Gustas"
+            const playlistController = new PlaylistController();
+            await playlistController.addLikedSongsToFavorites(userId);
 
             return res.status(200).json({ message: "Like removed successfully." });
         } catch (error) {
+            console.log(error);
             res.status(500).json({ message: error.message });
         }
     }
-
-
 }
 
 export default LikeController;
